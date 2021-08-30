@@ -51,18 +51,20 @@ class ProductController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|min:3',
             'price' => 'required|integer',
-
+            'image'=>'required|image',
         ]);
         /// if validation failed
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
+            $upload_file =$request->image->store('public/product_img/');
 
         $product = new Product();
 
         $product->name = $request->name;
         $product->price = $request->price;
+        $product->image = $request->image .'-'. $request->image->getClientOriginalExtension();
         if (auth()->user()->products()->save($product)) {
 
 
